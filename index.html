@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<title>Fashion Amsin Mall | हर जरूरत का सामान</title>
+<style>
+:root{--black:#111;--yellow:#ffd400;--paper:#f6f6f2;--muted:#666}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans Devanagari",sans-serif;background:var(--paper);color:#171717}
+header{background:var(--black);color:white;padding:14px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.brand{font-weight:900;font-size:22px;letter-spacing:.4px}.brand span{color:var(--yellow)}.tag{font-size:12px;color:#ddd;margin-top:3px}
+button,.btn{border:0;border-radius:9px;padding:11px 15px;font-weight:700;cursor:pointer}.yellow{background:var(--yellow);color:#111}.dark{background:#222;color:white}.outline{background:transparent;border:1px solid #aaa}
+.hero{margin:18px auto;max-width:1180px;background:linear-gradient(115deg,#111 0%,#292929 65%,#4a3d00 100%);color:white;border-radius:18px;padding:35px 6%;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:220px}
+.hero h1{font-size:clamp(28px,5vw,48px);margin:0 0 10px}.hero h1 span{color:var(--yellow)}.hero p{color:#eee;max-width:530px;line-height:1.6}.hero-badge{font-size:64px}
+.wrap{max-width:1180px;margin:auto;padding:0 16px 40px}.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:24px 0 14px}.section-title h2{margin:0;font-size:22px}
+.categories{display:flex;gap:9px;overflow:auto;padding:3px 0 12px}.cat{white-space:nowrap;background:white;border:1px solid #ddd;border-radius:30px;padding:10px 15px;cursor:pointer}.cat.active{background:var(--yellow);border-color:var(--yellow);font-weight:bold}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 18px}.tools input,.admin input,.admin select{padding:12px;border:1px solid #ccc;border-radius:9px;font-size:15px}.tools input{flex:1;min-width:190px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:15px}.card{background:white;border-radius:14px;overflow:hidden;border:1px solid #e5e5e5;box-shadow:0 3px 12px #00000009}.photo{height:145px;background:#eee;display:grid;place-items:center;font-size:54px}.card-body{padding:13px}.card h3{font-size:16px;margin:0 0 8px}.price{font-weight:900;font-size:19px}.old{color:#888;text-decoration:line-through;font-size:13px;margin-left:6px}.small{font-size:12px;color:var(--muted);margin:7px 0 12px}.card-actions{display:flex;gap:7px}.card-actions button{flex:1;padding:9px 6px;font-size:13px}
+.panel{background:white;border:1px solid #ddd;border-radius:14px;padding:16px;margin-top:25px}.admin{display:none}.admin.show{display:block}.admin form{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px}.admin h3{margin-top:0}.cartbox{position:fixed;right:15px;bottom:15px;background:var(--yellow);padding:13px 17px;border-radius:40px;box-shadow:0 4px 20px #0003;z-index:8;font-weight:900;cursor:pointer}
+footer{background:#111;color:white;text-align:center;padding:25px 15px;line-height:1.8}footer a{color:var(--yellow)}
+.empty{padding:30px;text-align:center;color:#666;background:white;border-radius:12px}
+@media(max-width:600px){header{padding:12px 4%}.hero{margin:12px;border-radius:13px;padding:25px 20px}.hero-badge{font-size:42px}.brand{font-size:19px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.photo{height:115px}.card-body{padding:10px}.card h3{font-size:14px}}
+</style>
+</head>
+<body>
+<header>
+ <div><div class="brand">FASHION <span>AMSIN MALL</span></div><div class="tag">हर जरूरत का सामान, एक ही जगह!</div></div>
+ <div><button class="yellow" onclick="showAdmin()">Admin Panel</button></div>
+</header>
+<section class="hero">
+ <div><h1>स्वागत है <span>Fashion Amsin Mall</span> में!</h1><p>फैशन, मोबाइल, घर-रसोई और रोजमर्रा की जरूरतों के सामान एक ही जगह देखें। पसंदीदा सामान WhatsApp पर ऑर्डर करें।</p><button class="yellow" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">अभी खरीदारी करें →</button></div>
+ <div class="hero-badge">🛍️</div>
+</section>
+<main class="wrap">
+ <div class="section-title"><h2>श्रेणियाँ</h2></div>
+ <div class="categories" id="categories"></div>
+ <div class="section-title"><h2 id="productHeading">लोकप्रिय प्रोडक्ट</h2><span id="count" class="small"></span></div>
+ <div class="tools"><input id="search" placeholder="प्रोडक्ट खोजें..." oninput="renderProducts()"><button class="dark" onclick="renderProducts()">खोजें</button></div>
+ <div id="products" class="grid"></div>
+ <section class="panel admin" id="admin">
+  <div class="section-title"><h2>Admin Panel</h2><button class="outline" onclick="hideAdmin()">बंद करें</button></div>
+  <p class="small">यह शुरुआती डेमो है। यहाँ जोड़े गए प्रोडक्ट इसी ब्राउज़र में सेव होंगे।</p>
+  <h3>नया प्रोडक्ट जोड़ें</h3>
+  <form id="productForm">
+   <input id="pname" placeholder="प्रोडक्ट का नाम" required>
+   <input id="pprice" type="number" min="1" placeholder="कीमत ₹" required>
+   <select id="pcat"></select>
+   <input id="pemoji" placeholder="इमोजी (जैसे 👗)" value="🛍️">
+   <input id="pdesc" placeholder="छोटा विवरण">
+   <button class="yellow" type="submit">प्रोडक्ट जोड़ें</button>
+  </form>
+  <h3 style="margin-top:20px">अपने जोड़े हुए प्रोडक्ट</h3><div id="adminList"></div>
+ </section>
+</main>
+<div class="cartbox" onclick="openCart()">🛒 कार्ट: <span id="cartCount">0</span></div>
+<footer>
+ <b>FASHION AMSIN MALL</b><br>ऑर्डर और सहायता के लिए WhatsApp करें: <a href="https://wa.me/916393804043" target="_blank">6393804043</a><br>
+ <span class="small" style="color:#bbb">डिलीवरी, भुगतान और रिटर्न की शर्तें ऑर्डर कन्फर्म करने से पहले सप्लायर से जाँचें।</span>
+</footer>
+<script>
+const PHONE='916393804043';
+const cats=['सभी','महिला फैशन','पुरुष फैशन','मोबाइल और इलेक्ट्रॉनिक्स','घर और किचन','ब्यूटी','बच्चों के सामान','जूते और फुटवियर','गिफ्ट और एक्सेसरीज़'];
+const seed=[
+ {id:1,name:'फ्लोरल प्रिंट कुर्ती',price:399,cat:'महिला फैशन',emoji:'👗',desc:'डेली वियर के लिए सुंदर कुर्ती'},
+ {id:2,name:'एथनिक सूट सेट',price:699,cat:'महिला फैशन',emoji:'🥻',desc:'पार्टी और त्योहार के लिए'},
+ {id:3,name:'स्टाइलिश हैंडबैग',price:499,cat:'महिला फैशन',emoji:'👜',desc:'रोजमर्रा के उपयोग के लिए'},
+ {id:4,name:'कैजुअल टी-शर्ट',price:299,cat:'पुरुष फैशन',emoji:'👕',desc:'आरामदायक कैजुअल स्टाइल'},
+ {id:5,name:'वायरलेस ईयरबड्स',price:799,cat:'मोबाइल और इलेक्ट्रॉनिक्स',emoji:'🎧',desc:'कीमत और वारंटी सप्लायर से जाँचें'},
+ {id:6,name:'LED डेस्क लैंप',price:549,cat:'घर और किचन',emoji:'💡',desc:'घर और पढ़ाई के लिए'},
+ {id:7,name:'ब्यूटी मेकअप किट',price:349,cat:'ब्यूटी',emoji:'💄',desc:'दैनिक मेकअप कलेक्शन'},
+ {id:8,name:'बच्चों का बैग',price:449,cat:'बच्चों के सामान',emoji:'🎒',desc:'स्कूल और आउटिंग के लिए'},
+ {id:9,name:'कैजुअल स्नीकर्स',price:899,cat:'जूते और फुटवियर',emoji:'👟',desc:'आरामदायक फुटवियर'},
+ {id:10,name:'गिफ्ट कॉम्बो',price:299,cat:'गिफ्ट और एक्सेसरीज़',emoji:'🎁',desc:'खास अवसरों के लिए'}
+];
+let products=JSON.parse(localStorage.getItem('fam_products')||'null')||seed;
+let cart=[];
+let active='सभी';
+function save(){localStorage.setItem('fam_products',JSON.stringify(products))}
+function renderCats(){document.getElementById('categories').innerHTML=cats.map(c=>`<button class="cat ${active===c?'active':''}" onclick="setCat('${c}')">${c}</button>`).join('');document.getElementById('pcat').innerHTML=cats.slice(1).map(c=>`<option>${c}</option>`).join('')}
+function setCat(c){active=c;renderCats();renderProducts()}
+function renderProducts(){
+ const q=document.getElementById('search').value.toLowerCase();
+ const list=products.filter(p=>(active==='सभी'||p.cat===active)&&(p.name+' '+p.cat+' '+p.desc).toLowerCase().includes(q));
+ document.getElementById('count').textContent=list.length+' प्रोडक्ट';
+ document.getElementById('productHeading').textContent=active==='सभी'?'लोकप्रिय प्रोडक्ट':active;
+ document.getElementById('products').innerHTML=list.length?list.map(p=>`<article class="card"><div class="photo">${p.emoji||'🛍️'}</div><div class="card-body"><h3>${esc(p.name)}</h3><div class="price">₹${p.price}</div><div class="small">${esc(p.desc||p.cat)}</div><div class="card-actions"><button class="dark" onclick="addCart(${p.id})">कार्ट में डालें</button><button class="yellow" onclick="buyNow(${p.id})">ऑर्डर</button></div></div></article>`).join(''):'<div class="empty">इस श्रेणी में अभी प्रोडक्ट नहीं हैं।</div>';
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function addCart(id){let p=products.find(x=>x.id===id);cart.push(p);document.getElementById('cartCount').textContent=cart.length}
+function message(items){return 'नमस्ते Fashion Amsin Mall! मुझे ये सामान ऑर्डर करना है:%0A'+items.map((p,i)=>(i+1)+'. '+encodeURIComponent(p.name)+' - ₹'+p.price).join('%0A')+'%0Aकृपया उपलब्धता, डिलीवरी चार्ज और COD की पुष्टि करें।'}
+function buyNow(id){let p=products.find(x=>x.id===id);window.open('https://wa.me/'+PHONE+'?text='+message([p]),'_blank')}
+function openCart(){if(!cart.length){alert('आपका कार्ट खाली है। पहले कोई प्रोडक्ट जोड़ें।');return}window.open('https://wa.me/'+PHONE+'?text='+message(cart),'_blank')}
+function showAdmin(){document.getElementById('admin').classList.add('show');renderAdmin();document.getElementById('admin').scrollIntoView({behavior:'smooth'})}
+function hideAdmin(){document.getElementById('admin').classList.remove('show')}
+document.getElementById('productForm').addEventListener('submit',e=>{e.preventDefault();products.unshift({id:Date.now(),name:document.getElementById('pname').value.trim(),price:Number(document.getElementById('pprice').value),cat:document.getElementById('pcat').value,emoji:document.getElementById('pemoji').value||'🛍️',desc:document.getElementById('pdesc').value});save();e.target.reset();document.getElementById('pemoji').value='🛍️';renderProducts();renderAdmin()});
+function renderAdmin(){document.getElementById('adminList').innerHTML=products.map(p=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #eee"><span>${esc(p.name)} — ₹${p.price}</span><button class="dark" onclick="removeProduct(${p.id})">हटाएँ</button></div>`).join('')}
+function removeProduct(id){if(confirm('क्या यह प्रोडक्ट हटाना है?')){products=products.filter(p=>p.id!==id);save();renderProducts();renderAdmin()}}
+renderCats();renderProducts();
+</script>
+</body></html>
